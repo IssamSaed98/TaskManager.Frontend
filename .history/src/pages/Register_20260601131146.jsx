@@ -1,0 +1,299 @@
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { register } from '../api'
+import { useLanguage } from '../hooks/useLanguage'
+import LanguageSwitcher from '../components/LanguageSwitcher'
+
+function Register({ onRegister, goToLogin }) {
+  const { t, isRTL } = useLanguage()
+  const [role, setRole] = useState('employee')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [organizationName, setOrganizationName] = useState('')
+  const [organizationId, setOrganizationId] = useState('')
+  const [agreed, setAgreed] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [focusedField, setFocusedField] = useState(null)
+  const [particles, setParticles] = useState([])
+
+  const isAdmin = role === 'admin'
+
+  useEffect(() => {
+    setParticles(Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 3 + 1,
+      duration: Math.random() * 8 + 4,
+      delay: Math.random() * 4,
+    })))
+  }, [])
+
+  const handleRegister = async () => {
+    if (!username || !email || !password) return
+    if (isAdmin && !organizationName) return
+    if (!isAdmin && !organizationId) return
+    try {
+      setLoading(true)
+      setError('')
+      await register(
+        username, email, password,
+        isAdmin ? 'Admin' : 'Employee',
+        isAdmin ? organizationName : null,
+        !isAdmin ? parseInt(organizationId) : null
+      )
+      goToLogin()
+    } catch {
+      setError(t('error_email'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const inputStyle = (field) => ({
+    background: 'rgba(2,11,26,0.6)',
+    border: `1px solid ${focusedField === field ? 'rgba(34,184,255,0.5)' : 'rgba(34,184,255,0.1)'}`,
+    boxShadow: focusedField === field ? '0 0 20px rgba(34,184,255,0.15)' : 'none',
+  })
+
+  return (
+    <div
+      className="min-h-screen flex flex-col items-center justify-start overflow-hidden relative"
+      style={{ background: 'linear-gradient(160deg, #020B1A 0%, #031B3D 50%, #041C45 100%)', direction: isRTL ? 'rtl' : 'ltr' }}
+    >
+      {/* Particles */}
+      {particles.map(p => (
+        <motion.div
+          key={p.id}
+          className="absolute rounded-full pointer-events-none"
+          style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size, background: '#22B8FF', opacity: 0.3 }}
+          animate={{ y: [0, -30, 0], opacity: [0.1, 0.4, 0.1] }}
+          transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      ))}
+
+      {/* Rings */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+        {[300, 500, 700].map((size, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{ width: size, height: size, border: '1px solid rgba(34,184,255,0.06)' }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 30 + i * 10, repeat: Infinity, ease: 'linear' }}
+          />
+        ))}
+      </div>
+
+      {/* Radial glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(34,184,255,0.12) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+
+      {/* Language switcher */}
+      <div className="absolute top-4 left-4 z-20">
+        <LanguageSwitcher />
+      </div>
+
+      <motion.div
+        className="w-full max-w-sm px-4 pt-16 pb-8 z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+      >
+        {/* Logo */}
+        <motion.div
+          className="flex flex-col items-center mb-6"
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <motion.div
+            className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
+            style={{
+              background: 'linear-gradient(135deg, rgba(34,184,255,0.2), rgba(14,165,233,0.1))',
+              border: '1px solid rgba(34,184,255,0.3)',
+              boxShadow: '0 0 30px rgba(34,184,255,0.2), inset 0 1px 0 rgba(255,255,255,0.1)',
+            }}
+          >
+            <span style={{ fontSize: 28 }}>✦</span>
+          </motion.div>
+          <h1 className="text-3xl font-bold">
+            <span className="text-white">Task</span>
+            <span style={{ color: '#22B8FF' }}>Flow</span>
+          </h1>
+        </motion.div>
+
+        {/* Welcome */}
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-white mb-2">{t('new_account')}</h2>
+          <p className="text-sm" style={{ color: 'rgba(148,180,220,0.7)' }}>{t('join_us')}</p>
+        </div>
+
+        {/* Glass Card */}
+        <motion.div
+          className="rounded-3xl p-6"
+          style={{
+            background: 'rgba(3,27,61,0.6)',
+            border: '1px solid rgba(34,184,255,0.15)',
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 0 40px rgba(34,184,255,0.08), 0 20px 60px rgba(0,0,0,0.5)',
+          }}
+        >
+          {/* Role Toggle */}
+          <div className="relative flex rounded-2xl p-1 mb-5"
+            style={{ background: 'rgba(2,11,26,0.6)', border: '1px solid rgba(34,184,255,0.1)' }}>
+            <div
+  className="absolute top-1 bottom-1 rounded-xl transition-all duration-300"
+  style={{
+    background: 'linear-gradient(135deg,#22B8FF,#0EA5E9)',
+    boxShadow: '0 0 20px rgba(34,184,255,0.4)',
+    right: isAdmin ? 'calc(50%)' : '4px',
+    width: 'calc(50% - 4px)'
+  }}
+/>
+            <button onClick={() => setRole('employee')}
+              className="flex-1 py-2 text-xs font-medium relative z-10 flex items-center justify-center gap-1"
+              style={{ color: !isAdmin ? '#fff' : 'rgba(148,180,220,0.5)' }}>
+              👤 {t('employee')}
+            </button>
+            <button onClick={() => setRole('admin')}
+              className="flex-1 py-2 text-xs font-medium relative z-10 flex items-center justify-center gap-1"
+              style={{ color: isAdmin ? '#fff' : 'rgba(148,180,220,0.5)' }}>
+              👑 {t('admin')}
+            </button>
+          </div>
+
+          {/* Username */}
+          <div className="mb-3">
+            <motion.div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl"
+              animate={focusedField === 'username' ? { scale: 1.02 } : { scale: 1 }}
+              style={inputStyle('username')}>
+              <span style={{ color: focusedField === 'username' ? '#22B8FF' : '#3a5070' }}>👤</span>
+              <input
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                onFocus={() => setFocusedField('username')}
+                onBlur={() => setFocusedField(null)}
+                placeholder={t('username')}
+                className="flex-1 bg-transparent outline-none text-sm"
+                style={{ color: '#c0d8f0', fontFamily: 'inherit' }}
+              />
+            </motion.div>
+          </div>
+
+          {/* Email */}
+          <div className="mb-3">
+            <motion.div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl"
+              animate={focusedField === 'email' ? { scale: 1.02 } : { scale: 1 }}
+              style={inputStyle('email')}>
+              <span style={{ color: focusedField === 'email' ? '#22B8FF' : '#3a5070' }}>✉</span>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                onFocus={() => setFocusedField('email')}
+                onBlur={() => setFocusedField(null)}
+                placeholder={t('email')}
+                className="flex-1 bg-transparent outline-none text-sm"
+                style={{ color: '#c0d8f0', fontFamily: 'inherit' }}
+              />
+            </motion.div>
+          </div>
+
+          {/* Password */}
+          <div className="mb-3">
+            <motion.div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl"
+              animate={focusedField === 'password' ? { scale: 1.02 } : { scale: 1 }}
+              style={inputStyle('password')}>
+              <span style={{ color: focusedField === 'password' ? '#22B8FF' : '#3a5070' }}>🔒</span>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                onFocus={() => setFocusedField('password')}
+                onBlur={() => setFocusedField(null)}
+                placeholder={t('password')}
+                className="flex-1 bg-transparent outline-none text-sm"
+                style={{ color: '#c0d8f0', fontFamily: 'inherit' }}
+              />
+              <button onClick={() => setShowPassword(!showPassword)} style={{ color: '#3a5070' }}>
+                {showPassword ? '🙈' : '👁'}
+              </button>
+            </motion.div>
+          </div>
+
+          {/* Org field */}
+          <div className="mb-4">
+            <motion.div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl"
+              animate={focusedField === 'org' ? { scale: 1.02 } : { scale: 1 }}
+              style={inputStyle('org')}>
+              <span style={{ color: focusedField === 'org' ? '#22B8FF' : '#3a5070' }}>🏢</span>
+              <input
+                type={isAdmin ? 'text' : 'number'}
+                value={isAdmin ? organizationName : organizationId}
+                onChange={e => isAdmin ? setOrganizationName(e.target.value) : setOrganizationId(e.target.value)}
+                onFocus={() => setFocusedField('org')}
+                onBlur={() => setFocusedField(null)}
+                placeholder={isAdmin ? t('organization_name') : t('organization_id')}
+                className="flex-1 bg-transparent outline-none text-sm"
+                style={{ color: '#c0d8f0', fontFamily: 'inherit' }}
+              />
+            </motion.div>
+            {!isAdmin && (
+              <p className="text-xs mt-1 px-2" style={{ color: 'rgba(148,180,220,0.4)' }}>{t('org_id_hint')}</p>
+            )}
+          </div>
+
+          {/* Terms */}
+          <button
+            onClick={() => setAgreed(!agreed)}
+            className="flex items-center gap-2 text-xs mb-5 w-full"
+            style={{ color: '#4a6080' }}>
+            <div className="w-4 h-4 rounded flex items-center justify-center flex-shrink-0"
+              style={{ background: agreed ? '#22B8FF' : 'transparent', border: `1px solid ${agreed ? '#22B8FF' : '#1e2d40'}` }}>
+              {agreed && <span className="text-white text-xs">✓</span>}
+            </div>
+            {t('terms')}
+          </button>
+
+          {error && (
+            <motion.p
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-xs text-center mb-4"
+              style={{ color: '#f87171' }}>
+              {error}
+            </motion.p>
+          )}
+
+          {/* Register Button */}
+          <motion.button
+            onClick={handleRegister}
+            disabled={loading}
+            className="w-full py-4 rounded-2xl text-white font-bold text-sm mb-5"
+            style={{
+              background: 'linear-gradient(135deg, #22B8FF, #0EA5E9)',
+              boxShadow: '0 0 30px rgba(34,184,255,0.3)',
+            }}
+            whileHover={{ scale: 1.03, boxShadow: '0 0 40px rgba(34,184,255,0.5)' }}
+            whileTap={{ scale: 0.97 }}
+          >
+            {loading ? '...' : t('sign_up')}
+          </motion.button>
+
+          {/* Login link */}
+          <p className="text-center text-xs" style={{ color: '#3a5070' }}>
+            {t('have_account')}{' '}
+            <button onClick={goToLogin} style={{ color: '#22B8FF', fontWeight: 600 }}>
+              {t('sign_in_now')}
+            </button>
+          </p>
+        </motion.div>
+      </motion.div>
+    </div>
+  )
+}
+
+export default Register
