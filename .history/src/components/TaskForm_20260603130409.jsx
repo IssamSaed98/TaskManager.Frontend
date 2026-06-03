@@ -138,6 +138,6 @@ function TaskForm({ onTaskAdded }) {
       </div>
     </div>
   )
-
+}
 
 export default TaskForm
