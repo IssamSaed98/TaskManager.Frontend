@@ -353,7 +353,7 @@ function AdminDashboard({ onLogout }) {
         <LanguageSwitcher />
         {orgInfo && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg" style={{ background: 'rgba(14,165,233,0.08)', border: '0.5px solid rgba(14,165,233,0.2)' }}>
-           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>kjgikj
+           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>
           </div>
         )}
         <span className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '0.5px solid rgba(251,191,36,0.2)' }}>
@@ -415,13 +415,7 @@ function AdminDashboard({ onLogout }) {
               {item.label}
             </div>
           ))}
-          <div className="mt-auto pt-4 flex items-center gap-2 px-2" style={{ borderTop: '1px solid #1e2d40' }}>
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-xs font-bold text-white">IS</div>
-            <div>
-              <div className="text-xs text-gray-400">Admin</div>
-             
-            </div>
-          </div>
+         
         </div>
 
         <div className="flex-1 overflow-auto p-4 pb-20 md:pb-4">

@@ -131,7 +131,7 @@ function AdminDashboard({ onLogout }) {
       }
    
   const StatsGrid = () => (
-    <> <div className="grid grid-cols-2 gap-3 mb-4">
+    <> <br/><div className="grid grid-cols-2 gap-3 mb-4">
       {[
         { label: t('total_tasks'),     value: totalTasks,     color: '#60a5fa', bg: 'rgba(21,101,192,0.08)',  border: 'rgba(21,101,192,0.2)',  icon:  (<img src={taskList}  style={{ width: 25, height: 25 }}/>) },
         { label: t('active_tasks'),    value: activeTasks,    color: '#fbbf24', bg: 'rgba(251,191,36,0.08)',  border: 'rgba(251,191,36,0.2)',  icon: '⚡' },
@@ -353,7 +353,7 @@ function AdminDashboard({ onLogout }) {
         <LanguageSwitcher />
         {orgInfo && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg" style={{ background: 'rgba(14,165,233,0.08)', border: '0.5px solid rgba(14,165,233,0.2)' }}>
-           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>kjgikj
+           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>
           </div>
         )}
         <span className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '0.5px solid rgba(251,191,36,0.2)' }}>

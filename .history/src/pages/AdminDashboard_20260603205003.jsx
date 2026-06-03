@@ -353,7 +353,7 @@ function AdminDashboard({ onLogout }) {
         <LanguageSwitcher />
         {orgInfo && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg" style={{ background: 'rgba(14,165,233,0.08)', border: '0.5px solid rgba(14,165,233,0.2)' }}>
-           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>kjgikj
+           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>
           </div>
         )}
         <span className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '0.5px solid rgba(251,191,36,0.2)' }}>
@@ -401,33 +401,7 @@ function AdminDashboard({ onLogout }) {
         </div>
       )}
 
-      <div className="flex flex-1 overflow-hidden">
-        <div className="hidden md:flex w-52 flex-col py-5 px-3 gap-1 flex-shrink-0" style={{ background: '#0a0f1a', borderLeft: '1px solid #1e2d40' }}>
-          {navItems.map(item => (
-            <div key={item.key} onClick={() => setActivePage(item.key)}
-              className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs cursor-pointer transition-all"
-              style={{
-                background: activePage === item.key ? 'rgba(21,101,192,0.15)' : 'transparent',
-                color: activePage === item.key ? '#60a5fa' : '#4a6080',
-                border: activePage === item.key ? '0.5px solid rgba(21,101,192,0.25)' : '0.5px solid transparent'
-              }}>
-              <span>{item.icon}</span>
-              {item.label}
-            </div>
-          ))}
-          <div className="mt-auto pt-4 flex items-center gap-2 px-2" style={{ borderTop: '1px solid #1e2d40' }}>
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-xs font-bold text-white">IS</div>
-            <div>
-              <div className="text-xs text-gray-400">Admin</div>
-             
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-auto p-4 pb-20 md:pb-4">
-          {renderPage()}
-        </div>
-      </div>
+      
 
       <div className="fixed bottom-0 left-0 right-0 md:hidden flex" style={{ background: '#0a0f1a', borderTop: '1px solid #1e2d40', paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {navItems.map(item => (

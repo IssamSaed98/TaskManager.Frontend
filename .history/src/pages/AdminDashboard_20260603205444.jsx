@@ -347,18 +347,19 @@ function AdminDashboard({ onLogout }) {
           <div className="w-4 h-0.5 rounded bg-blue-400"></div>
           <div className="w-4 h-0.5 rounded bg-blue-400"></div>
         </button>
-        <span className="text-white font-semibold text-sm flex-1">
-          {navItems.find(n => n.key === activePage)?.label || t('admin_dashboard')}
-        </span>
+        
         <LanguageSwitcher />
         {orgInfo && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg" style={{ background: 'rgba(14,165,233,0.08)', border: '0.5px solid rgba(14,165,233,0.2)' }}>
-           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>kjgikj
+           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>
           </div>
         )}
-        <span className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '0.5px solid rgba(251,191,36,0.2)' }}>
-        <img src={cheff} style={myStyleThe} alt="admin icon" />
-        </span>
+      
+        <div className="mt-auto pt-4 flex items-center gap-2 px-2" style={{ borderTop: '1px solid #1e2d40' }}>
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-xs font-bold text-white">IS</div>
+            
+          </div>
+      
         <button onClick={onLogout} className="hidden md:block text-xs px-3 py-1 rounded-lg" style={{ color: '#4a6080', border: '0.5px solid #1e2d40', background: 'transparent' }}>
           {t('logout')}
         </button>

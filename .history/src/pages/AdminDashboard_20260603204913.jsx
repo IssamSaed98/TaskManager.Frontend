@@ -353,7 +353,7 @@ function AdminDashboard({ onLogout }) {
         <LanguageSwitcher />
         {orgInfo && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg" style={{ background: 'rgba(14,165,233,0.08)', border: '0.5px solid rgba(14,165,233,0.2)' }}>
-           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>kjgikj
+           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>
           </div>
         )}
         <span className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '0.5px solid rgba(251,191,36,0.2)' }}>
@@ -429,17 +429,7 @@ function AdminDashboard({ onLogout }) {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 md:hidden flex" style={{ background: '#0a0f1a', borderTop: '1px solid #1e2d40', paddingBottom: 'env(safe-area-inset-bottom)' }}>
-        {navItems.map(item => (
-          <button key={item.key} onClick={() => setActivePage(item.key)}
-            className="flex-1 flex flex-col items-center gap-1 py-2 transition-all"
-            style={{ background: 'transparent', border: 'none' }}>
-            <span className="text-lg">{item.icon}</span>
-            <span className="text-xs" style={{ color: activePage === item.key ? '#60a5fa' : '#3a5070' }}>{item.label}</span>
-            {activePage === item.key && <div className="w-1 h-1 rounded-full" style={{ background: '#60a5fa' }}></div>}
-          </button>
-        ))}
-      </div>
+    
 
     </div>
   )
