@@ -5,7 +5,6 @@ import { useLanguage } from '../hooks/useLanguage'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import cheff from '../images/businessman.png'
 import mitAr from '../images/user.png'
-import passImage from '../images/password.png'
 import { space } from 'postcss/lib/list'
 function Register({ onRegister, goToLogin }) {
   const { t, isRTL } = useLanguage()
@@ -71,11 +70,6 @@ const myStyleThe = {
 color:'white',
 width: '16px',
 height: '16px',
-}
-const myStyle = {
-  width: '16px',
-  height: '16px',
- 
 }
   return (
     <div

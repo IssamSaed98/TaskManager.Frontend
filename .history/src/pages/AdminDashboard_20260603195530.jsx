@@ -114,9 +114,9 @@ function AdminDashboard({ onLogout }) {
 
   const navItems = [
     { key: 'home',      icon: (<img src={HomePage}  style={{ width: 20, height: 20}}/>), label: t('admin_dashboard') },
-    { key: 'employees', icon: (<img src={mitarbeitern}  style={{ width: 24, height: 24}}/>), label: t('employees') },
+    { key: 'employees', icon: (<img src={mitarbeitern}  style={{ width: 22, height: 22}}/>), label: t('employees') },
     { key: 'tasks',     icon: (<img src={taskList}  style={{ width: 23, height: 23}}/>), label: t('all_tasks') },
-    { key: 'reports',   icon:  (<img src={  reports}  style={{ width: 17, height: 17}}/>), label: t('reports') },
+    { key: 'reports',   icon:  (<img src={  reports}  style={{ width: 18, height: 18}}/>), label: t('reports') },
   ]
   
   const myStyleThe = {

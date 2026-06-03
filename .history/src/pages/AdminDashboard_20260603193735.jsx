@@ -7,9 +7,7 @@ import orga from'../images/orga.png'
 import taskList from '../images/taskList.png'
 import compTask from '../images/compTask.png'
 import mitar from '../images/mitar.png'
-import HomePage from '../images/HomaPage.png'
-import mitarbeitern from '../images/mitarbeitern.png'
-import reports from '../images/reports.png'
+import HomePage from '../images/apple-touch-icon.png'
 
 
 function AdminDashboard({ onLogout }) {
@@ -114,11 +112,11 @@ function AdminDashboard({ onLogout }) {
 
   const navItems = [
     { key: 'home',      icon: (<img src={HomePage}  style={{ width: 20, height: 20}}/>), label: t('admin_dashboard') },
-    { key: 'employees', icon: (<img src={mitarbeitern}  style={{ width: 24, height: 24}}/>), label: t('employees') },
-    { key: 'tasks',     icon: (<img src={taskList}  style={{ width: 23, height: 23}}/>), label: t('all_tasks') },
-    { key: 'reports',   icon:  (<img src={  reports}  style={{ width: 17, height: 17}}/>), label: t('reports') },
+    { key: 'employees', icon: '👥', label: t('employees') },
+    { key: 'tasks',     icon: '📋', label: t('all_tasks') },
+    { key: 'reports',   icon: '📊', label: t('reports') },
   ]
-  
+
   const myStyleThe = {
     color:'white',
     width: '15px',

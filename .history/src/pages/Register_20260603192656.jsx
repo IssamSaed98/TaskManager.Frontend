@@ -72,11 +72,6 @@ color:'white',
 width: '16px',
 height: '16px',
 }
-const myStyle = {
-  width: '16px',
-  height: '16px',
- 
-}
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-start overflow-y-auto relative"
