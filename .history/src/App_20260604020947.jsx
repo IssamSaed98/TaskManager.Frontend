@@ -188,61 +188,55 @@ function App() {
 </div>
       {/* Tasks */}
       <div className="flex-1 overflow-auto p-4 pb-6">
-  {activeTab === 'tasks' ? (
-    loading ? (
-      <div className="text-center py-16 text-xs" style={{ color: '#3a5070' }}>جاري التحميل...</div>
-    ) : isMobile ? (
-      <div className="flex flex-col gap-3">
-        {filteredTasks.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="text-4xl mb-3">📭</div>
-            <p className="text-xs" style={{ color: '#3a5070' }}>لا توجد مهام</p>
-          </div>
-        ) : filteredTasks.map(task => {
-          const config = priorityConfig[task.priority] || priorityConfig.Medium
-          return (
-            <div key={task.id} className="rounded-2xl p-4 flex items-start gap-3 relative overflow-hidden"
-              style={{ background: '#0a0f1a', border: '0.5px solid #1e2d40' }}>
-              <div className="absolute right-0 top-0 bottom-0 w-1 rounded-r-2xl" style={{ background: config.bar }}></div>
-              <div className="flex-1 pr-2">
-                <div className={`text-sm font-medium mb-2 ${task.isCompleted ? 'line-through' : ''}`}
-                  style={{ color: task.isCompleted ? '#3a5070' : '#c0d8f0' }}>
-                  {task.title}
-                </div>
-                {task.description && (
-                  <div className="text-xs mb-2" style={{ color: '#3a5070' }}>{task.description}</div>
-                )}
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${config.tag}`}>{config.label}</span>
-                  {task.dueDate && (
-                    <span className="text-xs" style={{ color: '#3a5070' }}>
-                      📅 {new Date(task.dueDate).toLocaleDateString('ar-SA')}
-                    </span>
-                  )}
-                  <button onClick={() => handleToggle(task)}
-                    className="text-xs px-2 py-0.5 rounded-full mr-auto"
-                    style={{
-                      background: task.isCompleted ? 'rgba(34,197,94,0.1)' : 'rgba(21,101,192,0.1)',
-                      color: task.isCompleted ? '#4ade80' : '#60a5fa'
-                    }}>
-                    {task.isCompleted ? '✓ منجزة' : 'نشطة'}
-                  </button>
-                  <button onClick={() => handleDelete(task.id)} style={{ color: '#3a5070' }}>🗑</button>
-                </div>
+        {loading ? (
+          <div className="text-center py-16 text-xs" style={{ color: '#3a5070' }}>جاري التحميل...</div>
+        ) : isMobile ? (
+          <div className="flex flex-col gap-3">
+            {filteredTasks.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="text-4xl mb-3">📭</div>
+                <p className="text-xs" style={{ color: '#3a5070' }}>لا توجد مهام</p>
               </div>
-            </div>
-          )
-        })}
+            ) : filteredTasks.map(task => {
+              const config = priorityConfig[task.priority] || priorityConfig.Medium
+              return (
+                <div key={task.id} className="rounded-2xl p-4 flex items-start gap-3 relative overflow-hidden"
+                  style={{ background: '#0a0f1a', border: '0.5px solid #1e2d40' }}>
+                  <div className="absolute right-0 top-0 bottom-0 w-1 rounded-r-2xl" style={{ background: config.bar }}></div>
+                  <div className="flex-1 pr-2">
+                    <div className={`text-sm font-medium mb-2 ${task.isCompleted ? 'line-through' : ''}`}
+                      style={{ color: task.isCompleted ? '#3a5070' : '#c0d8f0' }}>
+                      {task.title}
+                    </div>
+                    {task.description && (
+                      <div className="text-xs mb-2" style={{ color: '#3a5070' }}>{task.description}</div>
+                    )}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${config.tag}`}>{config.label}</span>
+                      {task.dueDate && (
+                        <span className="text-xs" style={{ color: '#3a5070' }}>
+                          📅 {new Date(task.dueDate).toLocaleDateString('ar-SA')}
+                        </span>
+                      )}
+                      <button onClick={() => handleToggle(task)}
+                        className="text-xs px-2 py-0.5 rounded-full mr-auto"
+                        style={{
+                          background: task.isCompleted ? 'rgba(34,197,94,0.1)' : 'rgba(21,101,192,0.1)',
+                          color: task.isCompleted ? '#4ade80' : '#60a5fa'
+                        }}>
+                        {task.isCompleted ? '✓ منجزة' : 'نشطة'}
+                      </button>
+                      <button onClick={() => handleDelete(task.id)} style={{ color: '#3a5070' }}>🗑</button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <KanbanBoard tasks={filteredTasks} onDelete={handleDelete} onToggle={handleToggle} />
+        )}
       </div>
-    ) : (
-      <KanbanBoard tasks={filteredTasks} onDelete={handleDelete} onToggle={handleToggle} />
-    )
-  ) : (
-    <div className="p-4">
-      <Events userRole="Employee" />
-    </div>
-  )}
-</div>
 
     </div>
   )

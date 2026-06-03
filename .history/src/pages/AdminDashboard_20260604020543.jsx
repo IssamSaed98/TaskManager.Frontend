@@ -118,7 +118,6 @@ function AdminDashboard({ onLogout }) {
     { key: 'employees', icon: (<img src={mitarbeitern}  style={{ width: 24, height: 24}}/>), label: t('employees') },
     { key: 'tasks',     icon: (<img src={taskList}  style={{ width: 23, height: 23}}/>), label: t('all_tasks') },
     { key: 'reports',   icon:  (<img src={  reports}  style={{ width: 17, height: 17}}/>), label: t('reports') },
-    { key: 'events', icon: '📅', label: t('events') },
   ]
   
   const myStyleThe = {
@@ -283,7 +282,6 @@ function AdminDashboard({ onLogout }) {
     switch (activePage) {
       case 'home': return <><StatsGrid /><EmployeeList /></>
       case 'employees': return <EmployeeList />
-      case 'events': return <Events userRole="Admin" />
       case 'tasks': return (
         <>
           <div className="flex items-center justify-between mb-3">

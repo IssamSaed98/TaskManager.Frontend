@@ -283,7 +283,6 @@ function AdminDashboard({ onLogout }) {
     switch (activePage) {
       case 'home': return <><StatsGrid /><EmployeeList /></>
       case 'employees': return <EmployeeList />
-      case 'events': return <Events userRole="Admin" />
       case 'tasks': return (
         <>
           <div className="flex items-center justify-between mb-3">
