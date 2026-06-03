@@ -137,6 +137,7 @@ function AdminDashboard({ onLogout }) {
       ].map((s, i) => (
         <div key={i} className="rounded-2xl p-4 flex items-center gap-3" style={{ background: s.bg, border: `0.5px solid ${s.border}` }}>
           <div className="text-xl">{s.icon}</div>
+          <div>
           <div className="flex items-center gap-2">
   <div className="text-xl font-bold" style={{ color: s.color }}>
     {s.value}
@@ -145,6 +146,7 @@ function AdminDashboard({ onLogout }) {
     {s.label}
   </div>
 </div>
+          </div>
         </div>
       ))}
     </div>

@@ -137,14 +137,10 @@ function AdminDashboard({ onLogout }) {
       ].map((s, i) => (
         <div key={i} className="rounded-2xl p-4 flex items-center gap-3" style={{ background: s.bg, border: `0.5px solid ${s.border}` }}>
           <div className="text-xl">{s.icon}</div>
-          <div className="flex items-center gap-2">
-  <div className="text-xl font-bold" style={{ color: s.color }}>
-    {s.value}
-  </div>
-  <div className="text-xs" style={{ color: '#3a5070' }}>
-    {s.label}
-  </div>
-</div>
+          <div>
+            <div className="text-xl font-bold" style={{ color: s.color }}>{s.value}</div>
+            <div className="text-xs mt-0.5" style={{ color: '#3a5070' }}>{s.label}</div>
+          </div>
         </div>
       ))}
     </div>

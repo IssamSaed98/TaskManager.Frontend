@@ -3,12 +3,6 @@ import { getUsers, getUserTasks, createTaskForUser, updateTask, deleteTask, getO
 import { useLanguage } from '../hooks/useLanguage'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import cheff from '../images/businessman.png'
-import orga from'../images/orga.png'
-import taskList from '../images/taskList.png'
-import compTask from '../images/compTask.png'
-import mitar from '../images/mitar.png'
-
-
 function AdminDashboard({ onLogout }) {
   const { t, isRTL } = useLanguage()
   const [users, setUsers] = useState([])
@@ -121,30 +115,20 @@ function AdminDashboard({ onLogout }) {
     width: '15px',
     height: '15px',
     }
-    const myStylefh = {
-      
-      width: '19px',
-      height: '16px',
-      }
-   
   const StatsGrid = () => (
     <div className="grid grid-cols-2 gap-3 mb-4">
       {[
-        { label: t('total_tasks'),     value: totalTasks,     color: '#60a5fa', bg: 'rgba(21,101,192,0.08)',  border: 'rgba(21,101,192,0.2)',  icon:  (<img src={taskList}  style={{ width: 25, height: 25 }}/>) },
+        { label: t('total_tasks'),     value: totalTasks,     color: '#60a5fa', bg: 'rgba(21,101,192,0.08)',  border: 'rgba(21,101,192,0.2)',  icon: '📋' },
         { label: t('active_tasks'),    value: activeTasks,    color: '#fbbf24', bg: 'rgba(251,191,36,0.08)',  border: 'rgba(251,191,36,0.2)',  icon: '⚡' },
-        { label: t('completed_tasks'), value: completedTasks, color: '#4ade80', bg: 'rgba(34,197,94,0.08)',   border: 'rgba(34,197,94,0.2)',   icon:  (<img src={compTask}  style={{ width: 25, height: 25 }}/>) },
-        { label: t('employees'),       value: users.length,   color: '#a78bfa', bg: 'rgba(124,58,237,0.08)',  border: 'rgba(124,58,237,0.2)',  icon:  (<img src={mitar}  style={{ width: 25, height: 25 }}/>)  },
+        { label: t('completed_tasks'), value: completedTasks, color: '#4ade80', bg: 'rgba(34,197,94,0.08)',   border: 'rgba(34,197,94,0.2)',   icon: '✅' },
+        { label: t('employees'),       value: users.length,   color: '#a78bfa', bg: 'rgba(124,58,237,0.08)',  border: 'rgba(124,58,237,0.2)',  icon: '👥' },
       ].map((s, i) => (
         <div key={i} className="rounded-2xl p-4 flex items-center gap-3" style={{ background: s.bg, border: `0.5px solid ${s.border}` }}>
           <div className="text-xl">{s.icon}</div>
-          <div className="flex items-center gap-2">
-  <div className="text-xl font-bold" style={{ color: s.color }}>
-    {s.value}
-  </div>
-  <div className="text-xs" style={{ color: '#3a5070' }}>
-    {s.label}
-  </div>
-</div>
+          <div>
+            <div className="text-xl font-bold" style={{ color: s.color }}>{s.value}</div>
+            <div className="text-xs mt-0.5" style={{ color: '#3a5070' }}>{s.label}</div>
+          </div>
         </div>
       ))}
     </div>
@@ -350,7 +334,7 @@ function AdminDashboard({ onLogout }) {
         <LanguageSwitcher />
         {orgInfo && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg" style={{ background: 'rgba(14,165,233,0.08)', border: '0.5px solid rgba(14,165,233,0.2)' }}>
-           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>
+            <span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}>🏢 {orgInfo.name}</span>
           </div>
         )}
         <span className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '0.5px solid rgba(251,191,36,0.2)' }}>

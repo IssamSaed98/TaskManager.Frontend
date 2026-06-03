@@ -137,14 +137,10 @@ function AdminDashboard({ onLogout }) {
       ].map((s, i) => (
         <div key={i} className="rounded-2xl p-4 flex items-center gap-3" style={{ background: s.bg, border: `0.5px solid ${s.border}` }}>
           <div className="text-xl">{s.icon}</div>
-          <div className="flex items-center gap-2">
-  <div className="text-xl font-bold" style={{ color: s.color }}>
-    {s.value}
-  </div>
-  <div className="text-xs" style={{ color: '#3a5070' }}>
-    {s.label}
-  </div>
-</div>
+          <div>
+            <div className="text-xl font-bold" style={{ color: s.color }}>{s.value}</div>
+            <div className="text-xs mt-0.5" style={{ color: '#3a5070' }}>{s.label}</div>
+          </div>
         </div>
       ))}
     </div>
@@ -350,7 +346,7 @@ function AdminDashboard({ onLogout }) {
         <LanguageSwitcher />
         {orgInfo && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg" style={{ background: 'rgba(14,165,233,0.08)', border: '0.5px solid rgba(14,165,233,0.2)' }}>
-           <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>
+           <img src={orga} style={myStylefh}/>:<span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>
           </div>
         )}
         <span className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '0.5px solid rgba(251,191,36,0.2)' }}>
