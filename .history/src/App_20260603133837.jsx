@@ -53,11 +53,10 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('token')
-    localStorage.removeItem('remember')
-    sessionStorage.removeItem('token')
     setToken(null)
     setPage('login')
   }
+
   const handleAddTask = async (newTask) => {
     await createTask(newTask)
     loadTasks()

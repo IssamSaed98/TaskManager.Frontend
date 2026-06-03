@@ -19,9 +19,7 @@ const getUserRole = (token) => {
 
 function App() {
   const { t, isRTL } = useLanguage()
-  const [token, setToken] = useState(
-    localStorage.getItem('token') || sessionStorage.getItem('token')
-  )
+  const [token, setToken] = useState(localStorage.getItem('token'))
   const [page, setPage] = useState('login')
   const [tasks, setTasks] = useState([])
   const [activeFilter, setActiveFilter] = useState('all')
@@ -53,11 +51,10 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('token')
-    localStorage.removeItem('remember')
-    sessionStorage.removeItem('token')
     setToken(null)
     setPage('login')
   }
+
   const handleAddTask = async (newTask) => {
     await createTask(newTask)
     loadTasks()
