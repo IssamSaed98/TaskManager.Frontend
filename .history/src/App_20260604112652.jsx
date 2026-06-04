@@ -112,19 +112,6 @@ function App() {
   <span className="font-bold text-white text-sm">✦ TaskFlow</span>
   <span className="flex-1 text-center text-sm font-medium text-white">{t('my_tasks')}</span>
   <LanguageSwitcher />
-  {isSupported && (
-  <button
-    onClick={isSubscribed ? unsubscribe : subscribe}
-    className="text-xs px-2 py-1 rounded-lg transition-all"
-    style={{
-      background: isSubscribed ? 'rgba(34,197,94,0.1)' : 'rgba(14,165,233,0.1)',
-      color: isSubscribed ? '#4ade80' : '#60a5fa',
-      border: `0.5px solid ${isSubscribed ? 'rgba(34,197,94,0.2)' : 'rgba(14,165,233,0.2)'}`,
-    }}>
-    {isSubscribed ? '🔔' : '🔕'}
-  </button>
-)}
-
   <button onClick={() => setShowForm(!showForm)}
     className="text-xs px-3 py-1.5 rounded-lg font-medium"
     style={{ background: 'linear-gradient(135deg,#1565C0,#1E88E5)', color: '#fff' }}>

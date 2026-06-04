@@ -124,7 +124,6 @@ function App() {
     {isSubscribed ? '🔔' : '🔕'}
   </button>
 )}
-
   <button onClick={() => setShowForm(!showForm)}
     className="text-xs px-3 py-1.5 rounded-lg font-medium"
     style={{ background: 'linear-gradient(135deg,#1565C0,#1E88E5)', color: '#fff' }}>

@@ -30,7 +30,7 @@ function AdminDashboard({ onLogout }) {
   const [priority, setPriority] = useState('Medium')
   const [dueDate, setDueDate] = useState('')
   const { isSubscribed, isSupported, subscribe, unsubscribe } = usePushNotifications()
-
+  
   useEffect(() => {
     loadUsers()
     loadOrgInfo()
@@ -356,18 +356,6 @@ function AdminDashboard({ onLogout }) {
           {navItems.find(n => n.key === activePage)?.label || t('admin_dashboard')}
         </span>
         <LanguageSwitcher />
-        {isSupported && (
-  <button
-    onClick={isSubscribed ? unsubscribe : subscribe}
-    className="text-xs px-2 py-1 rounded-lg transition-all"
-    style={{
-      background: isSubscribed ? 'rgba(34,197,94,0.1)' : 'rgba(14,165,233,0.1)',
-      color: isSubscribed ? '#4ade80' : '#60a5fa',
-      border: `0.5px solid ${isSubscribed ? 'rgba(34,197,94,0.2)' : 'rgba(14,165,233,0.2)'}`,
-    }}>
-    {isSubscribed ? '🔔' : '🔕'}
-  </button>
-)}
         {orgInfo && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg" style={{ background: 'rgba(14,165,233,0.08)', border: '0.5px solid rgba(14,165,233,0.2)' }}>
            <img src={orga} style={myStylefh}/><span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}> {orgInfo.name}</span>
