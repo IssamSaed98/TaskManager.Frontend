@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import api from '../api'
 import axios from 'axios'
 
 const BASE_URL = 'https://taskmanager-api-issam-avafg0fphpe8bqbb.germanywestcentral-01.azurewebsites.net/api'
+
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4)
@@ -44,7 +44,7 @@ export const usePushNotifications = () => {
       })
 
       const publicKey = res.data.publicKey
-      const reg = await navigator.serviceWorker.ready
+      let reg = await navigator.serviceWorker.ready;
 
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,

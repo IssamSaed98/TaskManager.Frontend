@@ -10,7 +10,6 @@ import Events from './pages/Events'
 import { useLanguage } from './hooks/useLanguage'
 import { getTasks, createTask, updateTask, deleteTask } from './api'
 
-
 const getUserRole = (token) => {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]))
