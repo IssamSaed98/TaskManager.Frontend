@@ -7,7 +7,7 @@ import App from './App.jsx'
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw-notifications.js')
+    navigator.serviceWorker.register('/public/sw-notifications.js')
       .then(reg => console.log('SW registered:', reg.scope))
       .catch(err => console.error('SW error:', err))
   })
