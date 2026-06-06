@@ -36,7 +36,7 @@ export const usePushNotifications = () => {
 
   const subscribe = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token')
       if (!token) return
 
       // طلب إذن الإشعارات
