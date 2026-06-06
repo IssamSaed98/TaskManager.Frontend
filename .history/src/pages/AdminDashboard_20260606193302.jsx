@@ -81,7 +81,6 @@ function AdminDashboard({ onLogout }) {
   }, [selectedUser])
   
   useSignalR(handleRealtimeEvent)
-  
   const handleAddTask = async () => {
     if (!title || !selectedUser) return
     try {

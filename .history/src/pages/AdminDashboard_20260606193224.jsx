@@ -71,17 +71,6 @@ function AdminDashboard({ onLogout }) {
     }
   }
 
-  const handleRealtimeEvent = useCallback((eventName) => {
-    if (['TaskAdded', 'TaskUpdated', 'TaskDeleted', 'EventResponseUpdated', 'EventApproved'].includes(eventName)) {
-      loadUsers()
-      if (selectedUser) {
-        getUserTasks(selectedUser.id).then(res => setUserTasks(res.data)).catch(() => {})
-      }
-    }
-  }, [selectedUser])
-  
-  useSignalR(handleRealtimeEvent)
-  
   const handleAddTask = async () => {
     if (!title || !selectedUser) return
     try {

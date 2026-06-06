@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import AdminDashboard from './pages/AdminDashboard'
@@ -35,42 +35,6 @@ function App() {
   const [showForm, setShowForm] = useState(false)
   const { t, isRTL } = useLanguage()
   const { isSubscribed, isSupported, subscribe, unsubscribe } = usePushNotifications()
-
-  // --- إضافة الـ State والـ useEffect لتوجيه مستخدمي iOS ---
-  const [showIOSPrompt, setShowIOSPrompt] = useState(false)
-
-  useEffect(() => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-    const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches
-    const dismissed = localStorage.getItem('iosPromptDismissed')
-    if (isIOS && !isInStandaloneMode && !dismissed && token) {
-      setShowIOSPrompt(true)
-    }
-  }, [token])
-  // -----------------------------------------------------
-
-  // --- كود الـ Realtime الخاص بـ SignalR ---
-  const handleRealtimeEvent = useCallback((eventName, data) => {
-    switch (eventName) {
-      case 'TaskAdded':
-        setTasks(prev => {
-          if (prev.find(t => t.id === data.id)) return prev
-          return [...prev, data]
-        })
-        break
-      case 'TaskUpdated':
-        setTasks(prev => prev.map(t => t.id === data.id ? data : t))
-        break
-      case 'TaskDeleted':
-        setTasks(prev => prev.filter(t => t.id !== data))
-        break
-      default:
-        break
-    }
-  }, [])
-
-  useSignalR(token ? handleRealtimeEvent : null)
-  // ------------------------------------------------------------
 
   const userRole = token ? getUserRole(token) : null
 
@@ -153,26 +117,6 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen"
       style={{ background: '#0d1117', direction: isRTL ? 'rtl' : 'ltr' }}>
-
-      {/* إضافة الـ الـ JSX الخاص بـ iOSPrompt قبل الـ Topbar */}
-      {showIOSPrompt && (
-        <div className="fixed bottom-20 left-4 right-4 z-50 rounded-2xl p-4"
-          style={{ background: '#0a0f1a', border: '1px solid rgba(34,184,255,0.3)', boxShadow: '0 0 30px rgba(34,184,255,0.1)' }}>
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">📱</span>
-            <div className="flex-1">
-              <div className="text-sm font-semibold text-white mb-1">
-                لتفعيل الإشعارات على iPhone
-              </div>
-              <div className="text-xs" style={{ color: '#4a6080' }}>
-                اضغط على زر المشاركة ← ثم "Add to Home Screen" ← افتح التطبيق من الهوم سكرين
-              </div>
-            </div>
-            <button onClick={() => { setShowIOSPrompt(false); localStorage.setItem('iosPromptDismissed', 'true') }}
-              style={{ color: '#3a5070', fontSize: 18 }}>✕</button>
-          </div>
-        </div>
-      )}
 
       {/* Topbar */}
       <div className="flex items-center gap-2 px-4 py-3 sticky top-0 z-50"

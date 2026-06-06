@@ -6,7 +6,6 @@ import {
 } from '../api'
 import { useSignalR } from '../hooks/useSignalR'
 import { useCallback } from 'react'
-
 function Events({ userRole }) {
   const { t, isRTL } = useLanguage()
   const [events, setEvents] = useState([])
@@ -21,16 +20,6 @@ function Events({ userRole }) {
   const [requiredStaff, setRequiredStaff] = useState(1)
 
   const isAdmin = userRole === 'Admin'
-
-  // --- إضافة كود معالجة أحداث SignalR هنا بعد الـ states مباشرة ---
-  const handleRealtimeEvent = useCallback((eventName) => {
-    if (['EventCreated', 'EventResponseUpdated', 'EventApproved'].includes(eventName)) {
-      loadEvents()
-    }
-  }, [])
-
-  useSignalR(handleRealtimeEvent)
-  // ------------------------------------------------------------
 
   useEffect(() => {
     loadEvents()
