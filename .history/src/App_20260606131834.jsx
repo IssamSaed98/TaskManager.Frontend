@@ -20,7 +20,7 @@ const getUserRole = (token) => {
 }
 
 const getStoredToken = () => {
-  return localStorage.getItem('token') || null
+  return localStorage.getItem('token') || sessionStorage.getItem('token') || null
 }
 
 function App() {

@@ -20,7 +20,7 @@ const getUserRole = (token) => {
 }
 
 const getStoredToken = () => {
-  return localStorage.getItem('token') || null
+  return localStorage.getItem('token') || sessionStorage.getItem('token') || null
 }
 
 function App() {
@@ -63,6 +63,8 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('remember')
+    sessionStorage.removeItem('token')
     setToken(null)
     setPage('login')
     setTasks([])
