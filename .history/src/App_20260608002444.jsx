@@ -52,26 +52,6 @@ function App() {
 usePolling(loadTasks, 5000, !!token && userRole === 'Employee')
 
 
-const [eventStats, setEventStats] = useState({ attended: 0, pending: 0 })
-
-const loadEventStats = useCallback(async () => {
-  try {
-    const res = await getMyEventStats()
-    setEventStats(res.data)
-  } catch { }
-}, [])
-
-useEffect(() => {
-  if (token && userRole === 'Employee') loadEventStats()
-}, [token])
-
-usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
-
-
-
-
-
-
 
 
   const handleToggle = async (task) => {
@@ -90,8 +70,8 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
     setTasks([])
   }
 
-  const activeTasks = tasks.filter(t => !t.isCompleted).length
   const completedTasks = tasks.filter(t => t.isCompleted).length
+  const activeTasks = tasks.filter(t => !t.isCompleted).length
 
   const filteredTasks = tasks.filter(task => {
     if (filter === 'active') return !task.isCompleted
@@ -130,103 +110,23 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
       case 'tasks':     return <TasksPage />
       case 'events':    return <Events userRole="Employee" />
       case 'progress':  return <ProgressPage />
-      case 'settings': return <SettingsPage />
       default:          return <DashboardPage />
     }
   }
 
-
-
-  const SettingsPage = () => (
-    <div>
-      <div className="font-semibold text-white text-sm mb-4">Einstellungen</div>
-      <div className="rounded-2xl p-5 mb-3" style={{ background: '#0a0f1a', border: '0.5px solid #1e2d40' }}>
-        <div className="text-xs mb-3" style={{ color: '#3a5070' }}>Sprache / Language / اللغة</div>
-        <LanguageSwitcher />
-      </div>
-      <div className="rounded-2xl p-5 mb-3" style={{ background: '#0a0f1a', border: '0.5px solid #1e2d40' }}>
-        <div className="text-xs mb-3" style={{ color: '#3a5070' }}>Benachrichtigungen</div>
-        {isSupported && (
-          <button onClick={isSubscribed ? unsubscribe : subscribe}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm w-full"
-            style={{
-              background: isSubscribed ? 'rgba(34,197,94,0.08)' : 'rgba(14,165,233,0.08)',
-              color: isSubscribed ? '#4ade80' : '#60a5fa',
-              border: `0.5px solid ${isSubscribed ? 'rgba(34,197,94,0.2)' : 'rgba(14,165,233,0.2)'}`,
-            }}>
-            {isSubscribed ? '🔔 Benachrichtigungen aktiv' : '🔕 Benachrichtigungen aktivieren'}
-          </button>
-        )}
-      </div>
-      <div className="rounded-2xl p-5" style={{ background: '#0a0f1a', border: '0.5px solid #1e2d40' }}>
-        <button onClick={handleLogout}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm w-full"
-          style={{ background: 'rgba(239,68,68,0.06)', color: '#f87171', border: '0.5px solid rgba(239,68,68,0.15)' }}>
-          🚪 Abmelden
-        </button>
-      </div>
-    </div>
-  )
-
-
-
-
-
   const DashboardPage = () => {
-
+    const [eventStats, setEventStats] = useState({ attended: 0, pending: 0 })
+  
+    useEffect(() => {
+      getMyEventStats().then(res => setEventStats(res.data)).catch(() => {})
+    }, [])
+  
+    usePolling(() => {
+      return getMyEventStats().then(res => setEventStats(res.data)).catch(() => {})
+    }, 5000, true)
   
     return (
       <div>
-
-
-{showIOSGuide && (
-  <div className="fixed inset-0 z-50 flex items-end justify-center p-4"
-    style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}>
-    <div className="w-full max-w-sm rounded-2xl p-5"
-      style={{ background: '#0a0f1a', border: '1px solid rgba(99,102,241,0.3)' }}>
-      <div className="text-center mb-4">
-        <div className="text-4xl mb-3">📱</div>
-        <div className="font-bold text-white mb-2">Benachrichtigungen aktivieren</div>
-        <div className="text-sm" style={{ color: '#4a7090' }}>
-          Um Benachrichtigungen auf iPhone zu erhalten:
-        </div>
-      </div>
-      <div className="flex flex-col gap-2 mb-5">
-        {[
-          '1. Tippe auf das Teilen-Symbol 📤',
-          '2. Wähle "Zum Home-Bildschirm"',
-          '3. Öffne TaskFlow vom Home-Bildschirm',
-          '4. Aktiviere Benachrichtigungen in den Einstellungen'
-        ].map((step, i) => (
-          <div key={i} className="text-xs p-2 rounded-lg" style={{ background: '#111827', color: '#7090b0' }}>
-            {step}
-          </div>
-        ))}
-      </div>
-      <button
-        onClick={() => { setShowIOSGuide(false); localStorage.setItem('iosGuideShown', 'true') }}
-        className="w-full py-3 rounded-xl text-sm font-bold"
-        style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: '#fff' }}>
-        Verstanden
-      </button>
-    </div>
-  </div>
-)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
         {/* Welcome Banner */}
         <div className="rounded-2xl p-6 mb-6 flex items-center justify-between overflow-hidden"
           style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08))', border: '0.5px solid rgba(99,102,241,0.2)' }}>
@@ -243,9 +143,9 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {[
-            { icon: '📅', num: eventStats.attended, label: 'Events besucht', color: '#a5b4fc', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.2)', page: 'events' },
+            { icon: '✅', num: completedTasks, label: 'Erledigte Aufgaben', color: '#4ade80', bg: 'rgba(34,197,94,0.08)', border: 'rgba(34,197,94,0.15)', page: 'tasks' },
             { icon: '⚡', num: activeTasks, label: 'Offene Aufgaben', color: '#f87171', bg: 'rgba(239,68,68,0.06)', border: 'rgba(239,68,68,0.15)', page: 'tasks' },
-            { icon: '✅', num: completedTasks, label: 'Erledigte Aufgaben', color: '#4ade80', bg: 'rgba(34,197,94,0.08)', border: 'rgba(34,197,94,0.2)', page: 'tasks' },
+            { icon: '📅', num: eventStats.attended, label: 'Events besucht', color: '#a5b4fc', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.2)', page: 'events' },
             { icon: '🔔', num: eventStats.pending, label: 'Ausstehende Events', color: '#fbbf24', bg: 'rgba(251,191,36,0.08)', border: 'rgba(251,191,36,0.2)', page: 'events' },
           ].map((s, i) => (
             <div key={i} onClick={() => setActivePage(s.page)}
@@ -281,8 +181,7 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
                 </button>
                 <div className="flex-1">
                   <div className={`text-sm font-medium ${task.isCompleted ? 'line-through' : ''}`}
-                    style={{ color: task.isCompleted ? '#4a6080' : '#ffffff' }}
-                    >
+                    style={{ color: task.isCompleted ? '#3a5070' : '#e2f0ff' }}>
                     {task.title}
                   </div>
                 </div>
@@ -361,7 +260,7 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
 
               <div className="flex-1 min-w-0">
                 <div className={`text-sm font-medium mb-0.5 ${task.isCompleted ? 'line-through' : ''}`}
-                  style={{ color: task.isCompleted ? '#4a6080' : '#ffffff' }}>
+                  style={{ color: task.isCompleted ? '#3a5070' : '#e2f0ff' }}>
                   {task.title}
                 </div>
                 {task.description && (
@@ -391,22 +290,6 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
       </div>
     </div>
   )
-
-
-
-  const [showIOSGuide, setShowIOSGuide] = useState(false)
-
-  useEffect(() => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-    const shown = localStorage.getItem('iosGuideShown')
-    if (isIOS && !isStandalone && !shown && token) {
-      setTimeout(() => setShowIOSGuide(true), 2000)
-    }
-  }, [token])
-
-
-
 
   const ProgressPage = () => {
     const total = tasks.length
@@ -549,33 +432,23 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
           {renderContent()}
         </div>
 
-       {/* Bottom nav — Mobile */}
-<div className="md:hidden fixed bottom-0 left-0 right-0"
-  style={{ background: '#0a0f1a', borderTop: '1px solid #1e2d40', paddingBottom: 'env(safe-area-inset-bottom)' }}>
-  <div className="flex">
-    {navItems.map(item => (
-      <button key={item.key} onClick={() => setActivePage(item.key)}
-        className="flex-1 flex flex-col items-center gap-1 py-2"
-        style={{ background: 'transparent', border: 'none' }}>
-        <span className="text-lg">{item.icon}</span>
-        <span style={{ color: activePage === item.key ? '#a5b4fc' : '#3a5070', fontSize: 9 }}>
-          {item.label}
-        </span>
-        {activePage === item.key && (
-          <div className="w-1 h-1 rounded-full" style={{ background: '#6366f1' }}></div>
-        )}
-      </button>
-    ))}
-    {/* زر الإعدادات */}
-    <button onClick={() => setActivePage('settings')}
-      className="flex-1 flex flex-col items-center gap-1 py-2"
-      style={{ background: 'transparent', border: 'none' }}>
-      <span className="text-lg">⚙️</span>
-      <span style={{ color: activePage === 'settings' ? '#a5b4fc' : '#3a5070', fontSize: 9 }}>Einstellungen</span>
-    </button>
-  </div>
-</div>
-
+        {/* Bottom nav — Mobile */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 flex"
+          style={{ background: '#0a0f1a', borderTop: '1px solid #1e2d40', paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          {navItems.map(item => (
+            <button key={item.key} onClick={() => setActivePage(item.key)}
+              className="flex-1 flex flex-col items-center gap-1 py-2"
+              style={{ background: 'transparent', border: 'none' }}>
+              <span className="text-lg">{item.icon}</span>
+              <span className="text-xs" style={{ color: activePage === item.key ? '#a5b4fc' : '#3a5070', fontSize: 9 }}>
+                {item.label}
+              </span>
+              {activePage === item.key && (
+                <div className="w-1 h-1 rounded-full" style={{ background: '#6366f1' }}></div>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   )

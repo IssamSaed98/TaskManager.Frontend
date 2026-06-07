@@ -52,26 +52,6 @@ function App() {
 usePolling(loadTasks, 5000, !!token && userRole === 'Employee')
 
 
-const [eventStats, setEventStats] = useState({ attended: 0, pending: 0 })
-
-const loadEventStats = useCallback(async () => {
-  try {
-    const res = await getMyEventStats()
-    setEventStats(res.data)
-  } catch { }
-}, [])
-
-useEffect(() => {
-  if (token && userRole === 'Employee') loadEventStats()
-}, [token])
-
-usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
-
-
-
-
-
-
 
 
   const handleToggle = async (task) => {
@@ -173,7 +153,24 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
 
 
   const DashboardPage = () => {
+    
+    const [eventStats, setEventStats] = useState({ attended: 0, pending: 0 })
 
+    const loadEventStats = useCallback(async () => {
+      try {
+        const res = await getMyEventStats()
+        setEventStats(res.data)
+      } catch { }
+    }, [])
+    
+    useEffect(() => {
+      if (token && userRole === 'Employee') loadEventStats()
+    }, [token])
+    
+    usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
+    
+    
+    
   
     return (
       <div>

@@ -48,10 +48,7 @@ function Events({ userRole }) {
       setLoading(false)
     }
   }
-  usePolling(loadEvents, 5000, true)
 
-
-  
   const handleCreateEvent = async () => {
     if (!title || !eventDate) return
     try {

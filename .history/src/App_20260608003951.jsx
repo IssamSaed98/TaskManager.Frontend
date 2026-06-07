@@ -52,26 +52,6 @@ function App() {
 usePolling(loadTasks, 5000, !!token && userRole === 'Employee')
 
 
-const [eventStats, setEventStats] = useState({ attended: 0, pending: 0 })
-
-const loadEventStats = useCallback(async () => {
-  try {
-    const res = await getMyEventStats()
-    setEventStats(res.data)
-  } catch { }
-}, [])
-
-useEffect(() => {
-  if (token && userRole === 'Employee') loadEventStats()
-}, [token])
-
-usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
-
-
-
-
-
-
 
 
   const handleToggle = async (task) => {
@@ -90,8 +70,8 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
     setTasks([])
   }
 
-  const activeTasks = tasks.filter(t => !t.isCompleted).length
   const completedTasks = tasks.filter(t => t.isCompleted).length
+  const activeTasks = tasks.filter(t => !t.isCompleted).length
 
   const filteredTasks = tasks.filter(task => {
     if (filter === 'active') return !task.isCompleted
@@ -171,9 +151,16 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
 
 
 
-
   const DashboardPage = () => {
-
+    const [eventStats, setEventStats] = useState({ attended: 0, pending: 0 })
+  
+    useEffect(() => {
+      getMyEventStats().then(res => setEventStats(res.data)).catch(() => {})
+    }, [])
+  
+    usePolling(() => {
+      return getMyEventStats().then(res => setEventStats(res.data)).catch(() => {})
+    }, 5000, true)
   
     return (
       <div>
@@ -281,8 +268,7 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
                 </button>
                 <div className="flex-1">
                   <div className={`text-sm font-medium ${task.isCompleted ? 'line-through' : ''}`}
-                    style={{ color: task.isCompleted ? '#4a6080' : '#ffffff' }}
-                    >
+                    style={{ color: task.isCompleted ? '#3a5070' : '#e2f0ff' }}>
                     {task.title}
                   </div>
                 </div>
@@ -361,7 +347,7 @@ usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
 
               <div className="flex-1 min-w-0">
                 <div className={`text-sm font-medium mb-0.5 ${task.isCompleted ? 'line-through' : ''}`}
-                  style={{ color: task.isCompleted ? '#4a6080' : '#ffffff' }}>
+                  style={{ color: task.isCompleted ? '#3a5070' : '#e2f0ff' }}>
                   {task.title}
                 </div>
                 {task.description && (

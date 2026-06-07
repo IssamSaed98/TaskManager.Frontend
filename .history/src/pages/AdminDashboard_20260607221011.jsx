@@ -49,10 +49,7 @@ function AdminDashboard({ onLogout }) {
       setLoading(false)
     }
   }
-  usePolling(loadUsers, 5000, true)
 
-
-  
   const loadOrgInfo = async () => {
     try {
       const response = await getOrganization()
