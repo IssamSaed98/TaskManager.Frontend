@@ -113,20 +113,6 @@ function AdminDashboard({ onLogout }) {
     loadUsers()
   }
 
-  const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Möchten Sie diesen Mitarbeiter wirklich löschen?')) return
-    try {
-      await deleteUser(userId)
-      loadUsers()
-      if (selectedUser?.id === userId) {
-        setSelectedUser(null)
-        setUserTasks([])
-      }
-    } catch { console.error('error') }
-  }
-
-
-
   const totalTasks = users.reduce((s, u) => s + u.totalTasks, 0)
   const completedTasks = users.reduce((s, u) => s + u.completedTasks, 0)
   const activeTasks = users.reduce((s, u) => s + u.activeTasks, 0)
@@ -190,7 +176,6 @@ function AdminDashboard({ onLogout }) {
         <span className="text-sm font-semibold text-white">{t('employees')}</span>
         <span className="text-xs" style={{ color: '#3a5070' }}>{users.length}</span>
       </div>
-      
       {loading ? (
         <div className="text-center py-8 text-xs" style={{ color: '#3a5070' }}>{t('loading')}</div>
       ) : users.length === 0 ? (
@@ -198,59 +183,32 @@ function AdminDashboard({ onLogout }) {
       ) : users.map((user, i) => {
         const pct = user.totalTasks > 0 ? Math.round((user.completedTasks / user.totalTasks) * 100) : 0
         const isSelected = selectedUser?.id === user.id
-        
         return (
-          <div key={user.id} 
-            onClick={() => selectUser(user)}
+          <div key={user.id} onClick={() => selectUser(user)}
             className="rounded-2xl p-4 mb-3 cursor-pointer transition-all"
             style={{
               background: isSelected ? 'rgba(21,101,192,0.1)' : '#0a0f1a',
               border: isSelected ? '0.5px solid rgba(21,101,192,0.35)' : '0.5px solid #1e2d40'
             }}>
-            
             <div className="flex items-center gap-3 mb-3">
-              {/* الصورة الرمزية (Avatar) */}
               <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${avatarColors[i % avatarColors.length]} flex items-center justify-center text-sm font-bold text-white flex-shrink-0`}>
                 {user.username.slice(0, 2).toUpperCase()}
               </div>
-              
-              {/* اسم الموظف وتفاصيل المهام */}
               <div className="flex-1">
                 <div className="text-sm font-medium" style={{ color: '#c0d8f0' }}>{user.username}</div>
                 <div className="text-xs mt-0.5" style={{ color: '#3a5070' }}>{user.completedTasks}/{user.totalTasks} {t('completed_tasks')}</div>
               </div>
-              
-              {/* نسبة الإنجاز */}
               <div className="text-sm font-bold" style={{ color: '#60a5fa' }}>{pct}%</div>
-              
-              {/* زر الحذف الذكي */}
-              <button
-                onClick={(e) => { 
-                  e.stopPropagation(); // يمنع تفعيل اختيار الموظف عند حذف الموظف
-                  handleDeleteUser(user.id); 
-                }}
-                className="text-xs px-2 py-1 rounded-lg transition-all hover:bg-red-500/20"
-                style={{ 
-                  background: 'rgba(239,68,68,0.06)', 
-                  color: '#f87171', 
-                  border: '0.5px solid rgba(239,68,68,0.15)' 
-                }}
-                title={t('delete')} // تلميح عند تمرير الماوس
-              >
-                🗑
-              </button>
             </div>
-            
-            {/* شريط التقدم */}
             <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#1e2d40' }}>
               <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: '#60a5fa' }} />
             </div>
-            
           </div>
         )
       })}
     </div>
   )
+
   const TasksList = () => (
     <div>
       {!selectedUser ? (

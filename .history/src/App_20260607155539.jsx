@@ -1,0 +1,337 @@
+import { useState, useEffect, useCallback } from 'react'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import AdminDashboard from './pages/AdminDashboard'
+import TaskForm from './components/TaskForm'
+import KanbanBoard from './components/KanbanBoard'
+import Events from './pages/Events'
+import LanguageSwitcher from './components/LanguageSwitcher'
+import { useLanguage } from './hooks/useLanguage'
+import { usePushNotifications } from './hooks/usePushNotifications'
+import { useSignalR } from './hooks/useSignalR'
+import { getTasks, createTask, updateTask, deleteTask } from './api'
+
+const getUserRole = (token) => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    return payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || 'Employee'
+  } catch {
+    return 'Employee'
+  }
+}
+
+const getStoredToken = () => {
+  return localStorage.getItem('token') || sessionStorage.getItem('token') || null
+}
+
+function App() {
+  const [token, setToken] = useState(localStorage.getItem('token'))
+  const [page, setPage] = useState('login')
+  const [tasks, setTasks] = useState([])
+  const [activeFilter, setActiveFilter] = useState('all')
+  const [activeTab, setActiveTab] = useState('tasks')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const { t, isRTL } = useLanguage()
+  const { isSubscribed, isSupported, subscribe, unsubscribe } = usePushNotifications()
+
+  // --- إضافة الـ State والـ useEffect لتوجيه مستخدمي iOS ---
+  const [showIOSPrompt, setShowIOSPrompt] = useState(false)
+
+  useEffect(() => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches
+    const dismissed = localStorage.getItem('iosPromptDismissed')
+    if (isIOS && !isInStandaloneMode && !dismissed && token) {
+      setShowIOSPrompt(true)
+    }
+  }, [token])
+  // -----------------------------------------------------
+
+  // --- كود الـ Realtime الخاص بـ SignalR ---
+  const handleRealtimeEvent = useCallback((eventName, data) => {
+    switch (eventName) {
+      case 'TaskAdded':
+        setTasks(prev => {
+          if (prev.find(t => t.id === data.id)) return prev
+          return [...prev, data]
+        })
+        break
+      case 'TaskUpdated':
+        setTasks(prev => prev.map(t => t.id === data.id ? data : t))
+        break
+      case 'TaskDeleted':
+        setTasks(prev => prev.filter(t => t.id !== data))
+        break
+      default:
+        break
+    }
+  }, [])
+
+  useSignalR(token ? handleRealtimeEvent : null)
+  // ------------------------------------------------------------
+
+  const userRole = token ? getUserRole(token) : null
+
+  useEffect(() => {
+    if (token) {
+      const role = getUserRole(token)
+      if (role === 'Employee') loadTasks()
+    }
+  }, [token])
+
+  const loadTasks = async () => {
+    try {
+      setLoading(true)
+      const response = await getTasks()
+      setTasks(response.data)
+      setError(null)
+    } catch {
+      setError(t('server_error'))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleLogin = (newToken) => {
+    setToken(newToken)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    setToken(null)
+    setPage('login')
+    setTasks([])
+  }
+
+  const handleAddTask = async (newTask) => {
+    await createTask(newTask)
+    loadTasks()
+    setShowForm(false)
+  }
+
+  const handleDelete = async (id) => {
+    await deleteTask(id)
+    loadTasks()
+  }
+
+  const handleToggle = async (task) => {
+    await updateTask(task.id, { ...task, isCompleted: !task.isCompleted })
+    loadTasks()
+  }
+
+  const completedCount = tasks.filter(t => t.isCompleted).length
+  const activeCount = tasks.filter(t => !t.isCompleted).length
+
+  const filteredTasks = tasks.filter(task => {
+    if (activeFilter === 'active') return !task.isCompleted
+    if (activeFilter === 'completed') return task.isCompleted
+    return true
+  })
+
+  const priorityConfig = {
+    High:   { tag: 'bg-red-900/30 text-red-400', bar: '#f87171', label: t('priority_high') },
+    Medium: { tag: 'bg-yellow-900/30 text-yellow-400', bar: '#fbbf24', label: t('priority_medium') },
+    Low:    { tag: 'bg-green-900/30 text-green-400', bar: '#4ade80', label: t('priority_low') },
+  }
+
+  // غير مسجل دخول
+  if (!token) {
+    if (page === 'register') {
+      return <Register onRegister={() => setPage('login')} goToLogin={() => setPage('login')} />
+    }
+    return <Login onLogin={handleLogin} goToRegister={() => setPage('register')} />
+  }
+
+  // لوحة المدير
+  if (userRole === 'Admin') {
+    return <AdminDashboard onLogout={handleLogout} />
+  }
+
+  // بورتال الموظف
+  return (
+    <div className="flex flex-col min-h-screen"
+      style={{ background: '#0d1117', direction: isRTL ? 'rtl' : 'ltr' }}>
+
+      {/* إضافة الـ الـ JSX الخاص بـ iOSPrompt قبل الـ Topbar */}
+      {showIOSPrompt && (
+        <div className="fixed bottom-20 left-4 right-4 z-50 rounded-2xl p-4"
+          style={{ background: '#0a0f1a', border: '1px solid rgba(34,184,255,0.3)', boxShadow: '0 0 30px rgba(34,184,255,0.1)' }}>
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">📱</span>
+            <div className="flex-1">
+              <div className="text-sm font-semibold text-white mb-1">
+                لتفعيل الإشعارات على iPhone
+              </div>
+              <div className="text-xs" style={{ color: '#4a6080' }}>
+                اضغط على زر المشاركة ← ثم "Add to Home Screen" ← افتح التطبيق من الهوم سكرين
+              </div>
+            </div>
+            <button onClick={() => { setShowIOSPrompt(false); localStorage.setItem('iosPromptDismissed', 'true') }}
+              style={{ color: '#3a5070', fontSize: 18 }}>✕</button>
+          </div>
+        </div>
+      )}
+
+      {/* Topbar */}
+      <div className="flex items-center gap-2 px-4 py-3 sticky top-0 z-50"
+        style={{ background: '#0a0f1a', borderBottom: '1px solid #1e2d40' }}>
+        <span className="font-bold text-white text-sm">✦ TaskFlow</span>
+        <span className="flex-1 text-center text-sm font-medium text-white">{t('my_tasks')}</span>
+        <LanguageSwitcher />
+        {isSupported && (
+          <button onClick={isSubscribed ? unsubscribe : subscribe}
+            className="text-xs px-2 py-1 rounded-lg transition-all"
+            style={{
+              background: isSubscribed ? 'rgba(34,197,94,0.1)' : 'rgba(14,165,233,0.1)',
+              color: isSubscribed ? '#4ade80' : '#60a5fa',
+              border: `0.5px solid ${isSubscribed ? 'rgba(34,197,94,0.2)' : 'rgba(14,165,233,0.2)'}`,
+            }}>
+            {isSubscribed ? '🔔' : '🔕'}
+          </button>
+        )}
+        <button onClick={() => setShowForm(!showForm)}
+          className="text-xs px-3 py-1.5 rounded-lg font-medium"
+          style={{ background: 'linear-gradient(135deg,#1565C0,#1E88E5)', color: '#fff' }}>
+          {t('add_task')}
+        </button>
+        <button onClick={handleLogout} style={{ color: '#f87171', fontSize: '11px' }}>
+          {t('logout')}
+        </button>
+      </div>
+
+      {/* Form */}
+      {showForm && (
+        <div className="px-4 pt-4">
+          <TaskForm onTaskAdded={handleAddTask} />
+        </div>
+      )}
+
+      {/* Progress */}
+      {tasks.length > 0 && activeTab === 'tasks' && (
+        <div className="mx-4 mt-4 rounded-2xl p-4 flex items-center gap-3"
+          style={{ background: '#0a0f1a', border: '0.5px solid #1e2d40' }}>
+          <span className="text-xs whitespace-nowrap" style={{ color: '#3a5070' }}>{t('progress')}</span>
+          <div className="flex-1 rounded-full h-2" style={{ background: '#1e2d40' }}>
+            <div className="h-2 rounded-full transition-all"
+              style={{ width: `${tasks.length ? (completedCount / tasks.length) * 100 : 0}%`, background: '#60a5fa' }} />
+          </div>
+          <span className="text-xs font-bold whitespace-nowrap" style={{ color: '#60a5fa' }}>
+            {Math.round(tasks.length ? (completedCount / tasks.length) * 100 : 0)}%
+          </span>
+        </div>
+      )}
+
+      {/* Tabs */}
+      <div className="flex gap-2 px-4 mt-4">
+        <button onClick={() => setActiveTab('tasks')}
+          className="flex-1 py-2 rounded-xl text-xs font-medium"
+          style={{
+            background: activeTab === 'tasks' ? 'linear-gradient(135deg,#1565C0,#1E88E5)' : '#0a0f1a',
+            color: activeTab === 'tasks' ? '#fff' : '#4a6080',
+            border: `0.5px solid ${activeTab === 'tasks' ? 'transparent' : '#1e2d40'}`
+          }}>
+          {t('my_tasks')}
+        </button>
+        <button onClick={() => setActiveTab('events')}
+          className="flex-1 py-2 rounded-xl text-xs font-medium"
+          style={{
+            background: activeTab === 'events' ? 'linear-gradient(135deg,#1565C0,#1E88E5)' : '#0a0f1a',
+            color: activeTab === 'events' ? '#fff' : '#4a6080',
+            border: `0.5px solid ${activeTab === 'events' ? 'transparent' : '#1e2d40'}`
+          }}>
+          📅 {t('events')}
+        </button>
+      </div>
+
+      {/* Filter tabs — فقط في تاب المهام */}
+      {activeTab === 'tasks' && (
+        <div className="flex gap-2 px-4 mt-3">
+          {[
+            { key: 'all', label: `${t('filter_all')} (${tasks.length})` },
+            { key: 'active', label: `${t('filter_active')} (${activeCount})` },
+            { key: 'completed', label: `${t('filter_completed')} (${completedCount})` },
+          ].map(btn => (
+            <button key={btn.key} onClick={() => setActiveFilter(btn.key)}
+              className="flex-1 py-2 rounded-xl text-xs font-medium transition-all"
+              style={{
+                background: activeFilter === btn.key ? 'rgba(14,165,233,0.15)' : '#0a0f1a',
+                color: activeFilter === btn.key ? '#60a5fa' : '#4a6080',
+                border: `0.5px solid ${activeFilter === btn.key ? 'rgba(14,165,233,0.3)' : '#1e2d40'}`
+              }}>
+              {btn.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Error */}
+      {error && (
+        <div className="mx-4 mt-3 rounded-xl p-3 text-xs text-center"
+          style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171' }}>
+          ⚠️ {error}
+        </div>
+      )}
+
+      {/* Content */}
+      <div className="flex-1 overflow-auto p-4 pb-6">
+        {activeTab === 'events' ? (
+          <Events userRole="Employee" />
+        ) : loading ? (
+          <div className="text-center py-16 text-xs" style={{ color: '#3a5070' }}>{t('loading')}</div>
+        ) : window.innerWidth < 768 ? (
+          <div className="flex flex-col gap-3">
+            {filteredTasks.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="text-4xl mb-3">📭</div>
+                <p className="text-xs" style={{ color: '#3a5070' }}>{t('no_tasks')}</p>
+              </div>
+            ) : filteredTasks.map(task => {
+              const config = priorityConfig[task.priority] || priorityConfig.Medium
+              return (
+                <div key={task.id} className="rounded-2xl p-4 flex items-start gap-3 relative overflow-hidden"
+                  style={{ background: '#0a0f1a', border: '0.5px solid #1e2d40' }}>
+                  <div className="absolute right-0 top-0 bottom-0 w-1 rounded-r-2xl"
+                    style={{ background: config.bar }}></div>
+                  <div className="flex-1 pr-2">
+                    <div className={`text-sm font-medium mb-2 ${task.isCompleted ? 'line-through' : ''}`}
+                      style={{ color: task.isCompleted ? '#3a5070' : '#c0d8f0' }}>
+                      {task.title}
+                    </div>
+                    {task.description && (
+                      <div className="text-xs mb-2" style={{ color: '#3a5070' }}>{task.description}</div>
+                    )}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${config.tag}`}>
+                        {config.label}
+                      </span>
+                      {task.dueDate && (
+                        <span className="text-xs" style={{ color: '#3a5070' }}>
+                          📅 {new Date(task.dueDate).toLocaleDateString()}
+                        </span>
+                      )}
+                      <button onClick={() => handleToggle(task)}
+                        className="text-xs px-2 py-0.5 rounded-full mr-auto"
+                        style={{
+                          background: task.isCompleted ? 'rgba(34,197,94,0.1)' : 'rgba(21,101,192,0.1)',
+                          color: task.isCompleted ? '#4ade80' : '#60a5fa'
+                        }}>
+                        {task.isCompleted ? t('status_done') : t('status_active')}
+                      </button>
+                      <button onClick={() => handleDelete(task.id)} style={{ color: '#3a5070' }}>🗑</button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <KanbanBoard tasks={filteredTasks} onDelete={handleDelete} onToggle={handleToggle} />
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default App
