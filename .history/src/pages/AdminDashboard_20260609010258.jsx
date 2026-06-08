@@ -84,14 +84,10 @@ function AdminDashboard({ onLogout }) {
     if (!selectedUser) return
     try {
       const response = await getUserTasks(selectedUser.id)
-      const newTasks = response.data
-      setUserTasks(prev => {
-        const prevStr = JSON.stringify(prev)
-        const newStr = JSON.stringify(newTasks)
-        return prevStr === newStr ? prev : newTasks
-      })
+      setUserTasks(response.data)
     } catch { }
   }, [selectedUser])
+
   usePolling(refreshUserTasks, 5000, !!selectedUser && activePage === 'tasks')
 
   const handleAddTask = async () => {
