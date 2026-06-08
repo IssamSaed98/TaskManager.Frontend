@@ -5,17 +5,6 @@ import { usePolling } from '../hooks/usePolling'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import Events from './Events'
 import { usePushNotifications } from '../hooks/usePushNotifications'
-import HomaPage from '../images/HomaPage.png'
-import mitarbeitern from '../images/mitarbeitern.png'
-import taskList from '../images/taskList.png'
-import reports from '../images/reports.png'
-import events from '../images/events.png'
-import orga from '../images/orga.png'
-import compTask from '../images/compTask.png'
-import mitar from '../images/mitar.png'
-import selectP from '../images/select person.png'
-import empty from '../images/empty.png'
-
 
 function AdminDashboard({ onLogout }) {
   const { t, isRTL } = useLanguage()
@@ -141,47 +130,30 @@ function AdminDashboard({ onLogout }) {
     'from-blue-600 to-blue-400', 'from-green-600 to-green-400',
     'from-purple-600 to-purple-400', 'from-yellow-600 to-yellow-400',
   ]
-  const myFStyle = {
-    width:'17px',
-    height :'16px'
-    };
-    const mySStyle = {
-      width:'30px',
-      height :'30px'
-      };
-      const myTStyle = {
-        width:'90px',
-        height :'90px'
-        };
+
   const navItems = [
-    { key: 'home',      icon: (<img src={HomaPage} style={myFStyle}/>), label: t('admin_dashboard') },
-    { key: 'employees', icon: (<img src={mitarbeitern} style={myFStyle}/>), label: t('employees') },
-    { key: 'tasks',     icon: (<img src={taskList} style={myFStyle}/>), label: t('all_tasks') },
-    { key: 'events',    icon: (<img src={events} style={myFStyle}/>), label: t('events') },
-    { key: 'reports',   icon: (<img src={reports} style={myFStyle}/>), label: t('reports') },
+    { key: 'home',      icon: '🏠', label: t('admin_dashboard') },
+    { key: 'employees', icon: '👥', label: t('employees') },
+    { key: 'tasks',     icon: '📋', label: t('all_tasks') },
+    { key: 'events',    icon: '📅', label: t('events') },
+    { key: 'reports',   icon: '📊', label: t('reports') },
   ]
-
- 
-
 
   const StatsGrid = () => (
     <div className="grid grid-cols-2 gap-3 mb-4">
       {[
-        { label: t('total_tasks'),       value: totalTasks,     color: '#60a5fa', bg: 'rgba(21,101,192,0.08)',  border: 'rgba(21,101,192,0.2)',  icon: (<img src={taskList} style={mySStyle}/>) },
-        { label: t('active_tasks'),      value: activeTasks,    color: '#fbbf24', bg: 'rgba(251,191,36,0.08)',  border: 'rgba(251,191,36,0.2)',  icon: '⚡' },
-        { label: t('completed_tasks'), value: completedTasks, color: '#4ade80', bg: 'rgba(34,197,94,0.08)',   border: 'rgba(34,197,94,0.2)',   icon: (<img src={compTask} style={mySStyle}/>) },
-        { label: t('employees'),       value: users.length,   color: '#a78bfa', bg: 'rgba(124,58,237,0.08)',  border: 'rgba(124,58,237,0.2)',  icon: (<img src={mitar} style={mySStyle}/>) },
+        { label: t('total_tasks'),     value: totalTasks,     color: '#60a5fa', bg: 'rgba(21,101,192,0.08)',  border: 'rgba(21,101,192,0.2)',  icon: '📋' },
+        { label: t('active_tasks'),    value: activeTasks,    color: '#fbbf24', bg: 'rgba(251,191,36,0.08)',  border: 'rgba(251,191,36,0.2)',  icon: '⚡' },
+        { label: t('completed_tasks'), value: completedTasks, color: '#4ade80', bg: 'rgba(34,197,94,0.08)',   border: 'rgba(34,197,94,0.2)',   icon: '✅' },
+        { label: t('employees'),       value: users.length,   color: '#a78bfa', bg: 'rgba(124,58,237,0.08)',  border: 'rgba(124,58,237,0.2)',  icon: '👥' },
       ].map((s, i) => (
-        <div key={i} className="rounded-2xl p-4 flex items-center justify-between gap-3"
+        <div key={i} className="rounded-2xl p-4 flex items-center gap-3"
           style={{ background: s.bg, border: `0.5px solid ${s.border}` }}>
-          
-          {/* القسم الأيمن: الأيقونة وبجانبها الرقم والنص على نفس السطر */}
-          <div className="flex items-center gap-2">
-            <div className="text-xl flex-shrink-0">{s.icon}</div>
+          <div className="text-xl">{s.icon}</div>
+          <div>
             <div className="text-xl font-bold" style={{ color: s.color }}>{s.value}</div>
-            <div className="text-xs whitespace-nowrap" style={{ color: '#93B5CC' }}>{s.label}</div>
+            <div className="text-xs mt-0.5" style={{ color: '#679DC9' }}>{s.label}</div>
           </div>
-  
         </div>
       ))}
     </div>
@@ -238,12 +210,12 @@ function AdminDashboard({ onLogout }) {
     <div>
       {!selectedUser ? (
         <div className="flex flex-col items-center justify-center py-16" style={{ color: '#3a5070' }}>
-          <div className="text-4xl mb-3"><img src={selectP} style={myTStyle}/></div>
+          <div className="text-4xl mb-3">👈</div>
           <p className="text-xs">{t('click_employee')}</p>
         </div>
       ) : userTasks.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16" style={{ color: '#3a5070' }}>
-          <div className="text-4xl mb-3"><img src={empty} style={myTStyle}/></div>
+          <div className="text-4xl mb-3">📭</div>
           <p className="text-xs">{t('no_tasks_employee')}</p>
         </div>
       ) : userTasks.map(task => {
@@ -393,7 +365,7 @@ function AdminDashboard({ onLogout }) {
         style={{ background: '#0a0f1a', borderBottom: '1px solid #1e2d40' }}>
         <button onClick={() => setSidebarOpen(!sidebarOpen)}
           className="w-9 h-9 rounded-xl flex flex-col items-center justify-center gap-1 flex-shrink-0 md:hidden"
-          style={{ background: 'rgba(14,165,233,0.1)', border: '0.5px solid rgba(14,165,233,0.2)' }}>
+          style={{ background: 'red', border: '0.5px solid rgba(14,165,233,0.2)' }}>
           <div className="w-4 h-0.5 rounded bg-blue-400"></div>
           <div className="w-4 h-0.5 rounded bg-blue-400"></div>
           <div className="w-4 h-0.5 rounded bg-blue-400"></div>
@@ -405,7 +377,7 @@ function AdminDashboard({ onLogout }) {
         {orgInfo && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg"
             style={{ background: 'rgba(14,165,233,0.08)', border: '0.5px solid rgba(14,165,233,0.2)' }}>
-           <img src={orga} style={myFStyle}/>  <span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}>{orgInfo.name}</span>
+            <span className="text-xs" style={{ color: 'rgba(14,165,233,0.6)' }}>🏢 {orgInfo.name}</span>
           </div>
         )}
         {isSupported && (
@@ -419,7 +391,10 @@ function AdminDashboard({ onLogout }) {
             {isSubscribed ? '🔔' : '🔕'}
           </button>
         )}
-       
+        <span className="text-xs px-2 py-1 rounded-full"
+          style={{ background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '0.5px solid rgba(251,191,36,0.2)' }}>
+          👑
+        </span>
         <button onClick={onLogout} className="hidden md:block text-xs px-3 py-1 rounded-lg"
           style={{ color: '#f87171', border: '0.5px solid rgba(239,68,68,0.2)', background: 'transparent' }}>
           {t('logout')}
@@ -474,7 +449,7 @@ function AdminDashboard({ onLogout }) {
               className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs cursor-pointer"
               style={{
                 background: activePage === item.key ? 'rgba(21,101,192,0.15)' : 'transparent',
-                color: activePage === item.key ? '#60a5fa' : '#93B5CC',
+                color: activePage === item.key ? '#60a5fa' : '#4a6080',
                 border: activePage === item.key ? '0.5px solid rgba(21,101,192,0.25)' : '0.5px solid transparent'
               }}>
               <span>{item.icon}</span>

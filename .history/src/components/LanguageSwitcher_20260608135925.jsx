@@ -34,20 +34,20 @@ function LanguageSwitcher() {
         }}>
         <span className="text-sm">{current.flag}</span>
         <span>{current.label}</span>
-        <span style={{ fontSize: '8px', opacity: 0.6 }}>{open ? '▼' : '▼'}</span>
+        <span style={{ fontSize: '8px', opacity: 0.6 }}>{open ? '▼' : '▲'}</span>
       </button>
 
       {open && (
         <div className="absolute z-50 rounded-xl overflow-hidden"
-        style={{
-          background: '#0a0f1a',
-          border: '0.5px solid rgba(14,165,233,0.15)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.5)', // تم تعديل اتجاه الظل ليكون للأسفل
-          minWidth: '130px',
-          top: 'calc(100% + 8px)', // تم التغيير من bottom إلى top لتفتح لأسفل
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}>
+          style={{
+            background: '#0a0f1a',
+            border: '0.5px solid rgba(14,165,233,0.15)',
+            boxShadow: '0 -8px 32px rgba(0,0,0,0.5)',
+            minWidth: '130px',
+            bottom: 'calc(100% + 8px)',
+            left: '50%',
+            transform: 'translateX(-90%)',
+          }}>
           {languages.map(lang => (
             <button
               key={lang.code}

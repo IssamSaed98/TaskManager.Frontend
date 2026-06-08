@@ -34,7 +34,7 @@ function LanguageSwitcher() {
         }}>
         <span className="text-sm">{current.flag}</span>
         <span>{current.label}</span>
-        <span style={{ fontSize: '8px', opacity: 0.6 }}>{open ? '▼' : '▼'}</span>
+        <span style={{ fontSize: '8px', opacity: 0.6 }}>{open ? '▼' : '▲'}</span>
       </button>
 
       {open && (

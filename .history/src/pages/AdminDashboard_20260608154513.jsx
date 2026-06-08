@@ -13,8 +13,6 @@ import events from '../images/events.png'
 import orga from '../images/orga.png'
 import compTask from '../images/compTask.png'
 import mitar from '../images/mitar.png'
-import selectP from '../images/select person.png'
-import empty from '../images/empty.png'
 
 
 function AdminDashboard({ onLogout }) {
@@ -149,10 +147,6 @@ function AdminDashboard({ onLogout }) {
       width:'30px',
       height :'30px'
       };
-      const myTStyle = {
-        width:'90px',
-        height :'90px'
-        };
   const navItems = [
     { key: 'home',      icon: (<img src={HomaPage} style={myFStyle}/>), label: t('admin_dashboard') },
     { key: 'employees', icon: (<img src={mitarbeitern} style={myFStyle}/>), label: t('employees') },
@@ -238,12 +232,12 @@ function AdminDashboard({ onLogout }) {
     <div>
       {!selectedUser ? (
         <div className="flex flex-col items-center justify-center py-16" style={{ color: '#3a5070' }}>
-          <div className="text-4xl mb-3"><img src={selectP} style={myTStyle}/></div>
+          <div className="text-4xl mb-3">👈</div>
           <p className="text-xs">{t('click_employee')}</p>
         </div>
       ) : userTasks.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16" style={{ color: '#3a5070' }}>
-          <div className="text-4xl mb-3"><img src={empty} style={myTStyle}/></div>
+          <div className="text-4xl mb-3">📭</div>
           <p className="text-xs">{t('no_tasks_employee')}</p>
         </div>
       ) : userTasks.map(task => {
