@@ -5,8 +5,10 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token')
-  if (token) config.headers.Authorization = `Bearer ${token}`
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
   return config
 })
 
@@ -26,20 +28,11 @@ export const getUsers = () => api.get('/admin/users')
 export const getUserTasks = (id) => api.get(`/admin/users/${id}/tasks`)
 export const createTaskForUser = (task) => api.post('/admin/tasks', task)
 export const getOrganization = () => api.get('/admin/organization')
-export const deleteUser = (id) => api.delete(`/admin/users/${id}`)
-
-// Events
 export const getEvents = () => api.get('/events')
 export const createEvent = (event) => api.post('/events', event)
 export const respondToEvent = (id, status) => api.post(`/events/${id}/respond`, { status })
 export const approveResponse = (eventId, userId) => api.post(`/events/${eventId}/approve/${userId}`)
 export const removeResponse = (eventId, userId) => api.delete(`/events/${eventId}/remove/${userId}`)
 export const deleteEvent = (id) => api.delete(`/events/${id}`)
+export const deleteUser = (id) => api.delete(`/admin/users/${id}`)
 export const getMyEventStats = () => api.get('/events/my-stats')
-
-// Notifications
-export const getVapidKey = () => api.get('/notifications/vapid-public-key')
-export const subscribeNotifications = (data) => api.post('/notifications/subscribe', data)
-export const unsubscribeNotifications = (endpoint) => api.delete('/notifications/unsubscribe', { data: { endpoint } })
-
-export default api
