@@ -55,13 +55,12 @@ function AdminDashboard({ onLogout }) {
     }
   }, [])
 
- 
   useEffect(() => {
-    loadUsers(true)  // أول مرة نعرض الـ loader
+    loadUsers()
     loadOrgInfo()
   }, [])
 
-  usePolling(() => loadUsers(false), 5000, true)  // بعدها بدون loader
+  usePolling(loadUsers, 5000, true)
 
   const selectUser = async (user) => {
     setSelectedUser(user)

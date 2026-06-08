@@ -36,19 +36,6 @@ function App() {
   const { t, isRTL } = useLanguage()
   const { isSubscribed, isSupported, subscribe, unsubscribe } = usePushNotifications()
 
-
-  const [isOnline, setIsOnline] = useState(navigator.onLine)
-
-useEffect(() => {
-  const handleOnline = () => setIsOnline(true)
-  const handleOffline = () => setIsOnline(false)
-  window.addEventListener('online', handleOnline)
-  window.addEventListener('offline', handleOffline)
-  return () => {
-    window.removeEventListener('online', handleOnline)
-    window.removeEventListener('offline', handleOffline)
-  }
-}, [])
   const userRole = token ? getUserRole(token) : null
   const userName = token ? getUserName(token) : 'Mitarbeiter'
 
@@ -84,8 +71,8 @@ useEffect(() => {
     } catch { }
   }, [])
 
-  usePolling(loadTasks, 5000, !!token && userRole === 'Employee' && isOnline)
-  usePolling(loadEventStats, 5000, !!token && userRole === 'Employee' && isOnline)
+  usePolling(loadTasks, 5000, !!token && userRole === 'Employee')
+  usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
 
   const handleToggle = async (task) => {
     try {
@@ -472,17 +459,7 @@ useEffect(() => {
   <div className="flex-1" />
   <div className="hidden md:block">
     <LanguageSwitcher />
-    
-    {!isOnline && (
-  <div className="text-xs px-3 py-1 rounded-lg"
-    style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '0.5px solid rgba(239,68,68,0.2)' }}>
-    ⚡ Offline
   </div>
-)}
-  </div>
-
-
-
   {isSupported && (
     <button onClick={isSubscribed ? unsubscribe : subscribe}
       className="text-xs px-2 py-1 rounded-lg transition-all"

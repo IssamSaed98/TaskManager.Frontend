@@ -472,17 +472,7 @@ useEffect(() => {
   <div className="flex-1" />
   <div className="hidden md:block">
     <LanguageSwitcher />
-    
-    {!isOnline && (
-  <div className="text-xs px-3 py-1 rounded-lg"
-    style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '0.5px solid rgba(239,68,68,0.2)' }}>
-    ⚡ Offline
   </div>
-)}
-  </div>
-
-
-
   {isSupported && (
     <button onClick={isSubscribed ? unsubscribe : subscribe}
       className="text-xs px-2 py-1 rounded-lg transition-all"

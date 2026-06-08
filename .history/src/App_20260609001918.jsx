@@ -36,19 +36,6 @@ function App() {
   const { t, isRTL } = useLanguage()
   const { isSubscribed, isSupported, subscribe, unsubscribe } = usePushNotifications()
 
-
-  const [isOnline, setIsOnline] = useState(navigator.onLine)
-
-useEffect(() => {
-  const handleOnline = () => setIsOnline(true)
-  const handleOffline = () => setIsOnline(false)
-  window.addEventListener('online', handleOnline)
-  window.addEventListener('offline', handleOffline)
-  return () => {
-    window.removeEventListener('online', handleOnline)
-    window.removeEventListener('offline', handleOffline)
-  }
-}, [])
   const userRole = token ? getUserRole(token) : null
   const userName = token ? getUserName(token) : 'Mitarbeiter'
 
@@ -84,8 +71,8 @@ useEffect(() => {
     } catch { }
   }, [])
 
-  usePolling(loadTasks, 5000, !!token && userRole === 'Employee' && isOnline)
-  usePolling(loadEventStats, 5000, !!token && userRole === 'Employee' && isOnline)
+  usePolling(loadTasks, 5000, !!token && userRole === 'Employee')
+  usePolling(loadEventStats, 5000, !!token && userRole === 'Employee')
 
   const handleToggle = async (task) => {
     try {
@@ -465,24 +452,14 @@ useEffect(() => {
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Topbar */}
-     
+       {/* Topbar */}
 <div className="flex items-center gap-2 px-4 py-3 sticky top-0 z-50"
   style={{ background: '#0a0f1a', borderBottom: '1px solid #1e2d40' }}>
   <span className="md:hidden font-bold text-sm" style={{ color: '#ffffff' }}>✦ TaskFlow</span>
   <div className="flex-1" />
   <div className="hidden md:block">
     <LanguageSwitcher />
-    
-    {!isOnline && (
-  <div className="text-xs px-3 py-1 rounded-lg"
-    style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '0.5px solid rgba(239,68,68,0.2)' }}>
-    ⚡ Offline
   </div>
-)}
-  </div>
-
-
-
   {isSupported && (
     <button onClick={isSubscribed ? unsubscribe : subscribe}
       className="text-xs px-2 py-1 rounded-lg transition-all"
@@ -512,29 +489,23 @@ useEffect(() => {
 
         {/* Bottom Nav Mobile */}
         <div className="md:hidden fixed bottom-0 left-0 right-0"
-  style={{ background: '#0a0f1a', borderTop: '1px solid #1e2d40', paddingBottom: 'env(safe-area-inset-bottom)' }}>
-  <div className="flex">
-    {navItems.map(item => (
-      <button key={item.key} onClick={() => setActivePage(item.key)}
-        className="flex-1 flex flex-col items-center gap-1 py-2"
-        style={{ background: 'transparent', border: 'none' }}>
-        <span className="text-lg">{item.icon}</span>
-        <span style={{ color: activePage === item.key ? '#a5b4fc' : '#3a5070', fontSize: 9 }}>
-          {item.label}
-        </span>
-        {activePage === item.key && (
-          <div className="w-1 h-1 rounded-full" style={{ background: '#6366f1' }}></div>
-        )}
-      </button>
-    ))}
-    <button onClick={handleLogout}
-      className="flex-1 flex flex-col items-center gap-1 py-2"
-      style={{ background: 'transparent', border: 'none' }}>
-      <span className="text-lg">🚪</span>
-      <span style={{ color: '#f87171', fontSize: 9 }}>Abmelden</span>
-    </button>
-  </div>
-</div>
+          style={{ background: '#0a0f1a', borderTop: '1px solid #1e2d40', paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          <div className="flex">
+            {navItems.map(item => (
+              <button key={item.key} onClick={() => setActivePage(item.key)}
+                className="flex-1 flex flex-col items-center gap-1 py-2"
+                style={{ background: 'transparent', border: 'none' }}>
+                <span className="text-lg">{item.icon}</span>
+                <span style={{ color: activePage === item.key ? '#a5b4fc' : '#3a5070', fontSize: 9 }}>
+                  {item.label}
+                </span>
+                {activePage === item.key && (
+                  <div className="w-1 h-1 rounded-full" style={{ background: '#6366f1' }}></div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )

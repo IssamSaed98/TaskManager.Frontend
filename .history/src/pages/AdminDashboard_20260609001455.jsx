@@ -61,7 +61,7 @@ function AdminDashboard({ onLogout }) {
     loadOrgInfo()
   }, [])
 
-  usePolling(() => loadUsers(false), 5000, true)  // بعدها بدون loader
+  usePolling(loadUsers, 5000, true)
 
   const selectUser = async (user) => {
     setSelectedUser(user)
